@@ -1,0 +1,758 @@
+---
+title: ""
+author: ""
+format: 
+  revealjs:
+    theme: [moon, style.scss]
+---
+
+## 
+
+Bienvenidos!
+
+ 
+
+### Bogotá R User Group
+
+### Simulación de MonteCarlo en R
+
+### Universidad del Rosario
+
+ 
+
+Nov 2024
+
+Francesco Giorgetti
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+# INTRODUCCIÓN
+## Intro
+
+**Metodo**, usado para resolver **problemas** que involucran:
+
+  -   incertidumbre
+  -   aleatoriedad
+  -   complejidad
+
+
+**Herramienta**: R: porque?
+
+  -   extensas librerias estadisticas
+  -   calculo vectorial
+  -   graficas para analizar resultados
+
+ 
+
+## Aplicaciones
+
+:::: {.columns}
+
+::: {.column width="50%"}
+  - estimaciones financieras
+  - duracion de proyectos
+  - pronosticos de produccion de O&G
+  - SAROPS 
+  - Predicción de fallas de equipos de multiples componentes
+  - Resolver integrales de funciones
+  - etc etc
+:::
+     
+::: {.column width="50%"}
+![](https://upload.wikimedia.org/wikipedia/en/f/fd/CMF_SearchPlan_on_Chart.JPG)
+:::
+
+::::
+
+## Problema {auto-animate="true"}
+
+Cuanto tiempo podriamos qudarnos aqui encerrados sin quedarnos sin oxygeno?
+
+    - dimensiones del auditorio
+    - cuantas personas 
+    - una pesona promedio inhala 0.35 lt/min
+    - nuestros pulmones absorben el 6% del oxigeno en el aire
+    
+    
+```{r}
+#| echo: true
+
+l <- 8
+w <- 12
+h <- 4
+people <- 25
+breath <- 0.350
+```
+
+## Problema {auto-animate=true}
+
+Cuanto tiempo podriamos qudarnos aqui encerrados sin quedarnos sin oxygeno?
+
+     - dimensiones del auditorio
+     - cuantas personas 
+     - una pesona promedio inhala 0.35 lt/min
+     - nuestros pulmones absorben el 6% del oxigeno en el aire
+    
+    
+```{r}
+#| echo: true
+
+l <- 8
+w <- 12
+h <- 4
+people <- 25
+breath <- 0.350
+
+vol <- l * w * h
+o2 <- vol * 0.06 * 1000
+time <- o2 / (people * breath * 60)
+```
+
+
+## Solución determinsitica {auto-animate=true}
+
+Cuanto tiempo podriamos qudarnos aqui encerrados sin quedarnos sin oxigeno?
+
+     - dimensiones del auditorio
+     - cuantas personas 
+     - una pesona promedio inhala 0.35 lt/min
+     - nuestros pulmones absorben el 6% del oxigeno en el aire
+    
+    
+```{r}
+#| echo: true
+
+l <- 8
+w <- 12
+h <- 4
+people <- 25
+breath <- 0.350
+
+vol <- l * w * h
+o2 <- vol * 0.06 * 1000
+time <- o2 / (people * breath * 60)
+
+time
+```
+> ¡¡¡Estamos a salvo!!!
+
+## Componentes de la solución
+
+![](img/process_diagram_1.svg){width=80%}
+
+## Componentes de la solución
+
+![](img/process_diagram_1.svg){width=80%}
+
+![](img/process_diagram_2.svg){width=80%}
+
+## Que sigue?
+
+**Metodo**, usado para resolver **problemas** que involucran:
+
+-   incertidumbre
+-   aleatoriedad
+-   complejidad
+
+Conozco las variables?
+
+## Cambio de componentes
+
+![](img/process_diagram_1.svg){width=80%}
+
+![](img/process_diagram_2.svg){width=80%}
+
+![](img/process_diagram_3.svg){width=80%}
+
+## Definición
+
+- Definición simple: **repetir un experimento N veces.**
+- ¿Porque debería repetir un experimento?
+  - por ejemplo, para definir el impacto de variables que desconozco
+- ¿No sería suficiente repetir el experimento con valores extremos? 
+  - la combinación de multiples variables es dificil de cuantificar 
+  - MC genera una distribución del reusltado: probabilidad de que algo ocurra
+  - Cuantos mas experimentos, mas preciso el resultado
+
+
+
+
+# CALCULO
+## Solución Determinsitica {auto-animate=true}
+
+Cuanto tiempo podriamos qudarnos aqui encerrados sin quedarnos sin oxigeno?
+
+     - dimensiones del auditorio
+     - cuantas personas 
+     - una pesona promedio inhala 0.35 lt/min
+     - nuestros pulmones absorben el 6% del oxigeno en el aire
+    
+    
+```{r}
+#| echo: true
+nn <- 1
+
+l <- 8
+w <- 12
+h <- 4
+people <- 25
+breath <- 0.350
+
+vol <- l * w * h
+o2 <- vol * 0.06 * 1000
+time <- o2 / (people * breath * 60)
+
+time
+```
+
+## Solución Probabilistica {auto-animate=true}
+
+Cuanto tiempo podriamos qudarnos aqui encerrados sin quedarnos sin oxigeno?
+
+     - dimensiones del auditorio
+     - cuantas personas 
+     - una pesona promedio inhala 0.35 lt/min
+     - nuestros pulmones absorben el 6% del oxigeno en el aire
+    
+    
+```{r}
+#| echo: true
+nn <- 1
+
+l <- rnorm(nn, 8, 1)
+w <- rnorm(nn, 12, 1)
+h <- rnorm(nn, 4, 0.5)
+people <- 25
+breath <- rnorm(nn, 0.350, 0.050) 
+
+vol <- l * w * h
+o2 <- vol * 0.06 * 1000
+time <- o2 / (people * breath * 60)
+
+time
+```
+
+## Solución Probabilistica {auto-animate=true}
+
+Cuanto tiempo podriamos qudarnos aqui encerrados sin quedarnos sin oxigeno?
+
+     - dimensiones del auditorio
+     - cuantas personas 
+     - una pesona promedio inhala 0.35 lt/min
+     - nuestros pulmones absorben el 6% del oxigeno en el aire
+    
+    
+```{r}
+#| echo: true
+nn <- 100
+
+l <- rnorm(nn, 8, 1)
+w <- rnorm(nn, 12, 1)
+h <- rnorm(nn, 4, 0.5)
+people <- 25
+breath <- rnorm(nn, 0.350, 0.050) 
+
+vol <- l * w * h
+o2 <- vol * 0.06 * 1000
+time <- o2 / (people * breath * 60)
+
+time
+```
+
+## Convergencia
+
+```{r}
+oxygentimer <- function(nn) {
+  l <- rnorm(nn, 8, 1)
+  w <- rnorm(nn, 12, 1)
+  h <- rnorm(nn, 4, 0.5)
+  people <- 25
+  breath <- rnorm(nn, 0.350, 0.050) 
+  
+  vol <- l * w * h
+  o2 <- vol * 0.06 * 1000
+  time <- o2 / (people * breath * 60)
+  
+  tibble(nn = nn,
+         p90 = quantile(time, probs = 0.9),
+         p50 = quantile(time, probs = 0.5),
+         p10 = quantile(time, probs = 0.1))
+  
+}
+
+purrr::map(c(10 ^ c(1:6)), oxygentimer) %>% 
+  purrr::list_rbind() %>% 
+  tidyr::gather(percentile, value, -nn) %>% 
+  ggplot(aes(x = nn, y = value, color = percentile)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10()
+
+```
+
+
+## Convergencia
+:::: {.columns}
+
+::: {.column width="50%"}
+![](img/convergencia.png){width=100%}
+:::
+
+::: {.column width="50%"}
+![](img/cdf_convergencia.png){width=100%}
+:::
+
+::::
+
+
+
+
+
+
+
+
+# RESULTADOS
+## Solucion Probabilisitca - Resultado
+
+```{r}
+#| echo: true
+summary(time)
+```
+
+```{r}
+ggplot(dplyr::as_data_frame(time), aes(x = time)) +
+  geom_histogram(aes(x = time, ..ncount..), fill = "grey23", alpha = 0.4) +
+  stat_ecdf(color = "darkred") +
+  geom_vline(aes(xintercept = mean(time)), color = "blue", linetype = 2) +
+  theme_bw() +
+  geom_text(aes(x = mean(time) - 1, y = 0.1, label = paste("mean =", round(mean(time), 1))), 
+            color = "blue", check_overlap = TRUE, angle = 90)
+```
+
+## Solucion Probabilisitca - Resultado
+
+```{r}
+oxygentimer2 <- function(nn) {
+  l <- rnorm(nn, 8, 1)
+  w <- rnorm(nn, 12, 1)
+  h <- rnorm(nn, 4, 0.5)
+  people <- 25
+  breath <- rnorm(nn, 0.350, 0.050) 
+  
+  vol <- l * w * h
+  o2 <- vol * 0.06 * 1000
+  time <- o2 / (people * breath * 60)
+  
+  tibble(nn = nn,
+        time = time)
+}
+
+purrr::map(c(10 ^ c(1:6)), oxygentimer2) %>% 
+  purrr::list_rbind() %>% 
+  ggplot(aes(x = time)) +
+  geom_histogram(aes(x = time, after_stat(ncount)), alpha = 0.5) +
+  # stat_ecdf(color = "darkred") +
+  xlim(0, 100) +
+  coord_flip() +
+  facet_wrap(~factor(nn), nrow = 1) 
+
+```
+
+## Histograma
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+tibble(x = rnorm(100, 23, 5)) %>% 
+  ggplot(aes(x = x)) +
+  geom_histogram(aes(x = x, after_stat(ncount)), alpha = 0.5) + 
+  stat_ecdf(color = "darkred") +
+  geom_hline(yintercept = c(0.1, 0.5, 0.9), color = "blue", linetype = 2) +
+  theme_light()
+
+```
+
+
+
+
+## Errores Tipicos
+
+ - dsitribuciones de entrada no representativas
+ - no considerar la dependencia entre variables
+ - utilizar resultados intermedios: valioso, pero con cuidado!
+ - sumar percentiles: 
+ 
+    - p50 + p50 = p50
+    - p90 + p90 ≠ p90
+    - p10 + p10 ≠ p10
+
+
+
+
+
+
+# DISTRIBUCIONES
+## Distribuciones {auto-animate="true"}
+
+> usa la función *random* 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: true
+nn <- 100
+set.seed(123)
+x <- rnorm(nn, 12, 5)
+
+hist(x)
+
+```
+:::
+
+::: {.column width="50%"}
+
+:::
+
+::::
+
+## Distribuciones {auto-animate="true"}
+
+> usa la función *random* 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: true
+nn <- 100
+set.seed(123)
+x <- rnorm(nn, 12, 5)
+
+hist(x)
+
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+nn <- 100
+set.seed(123)
+x <- runif(nn, 7, 17)
+
+hist(x)
+
+```
+:::
+
+::::
+
+
+## Distribuciones - Fit Datos Empiricos
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+nn <- 25
+set.seed(123)
+x <- rnorm(nn, 12, 5)
+fit <- fitdistrplus::fitdist(x, distr = "norm")
+summary(fit)
+plot(fit)
+```
+
+
+## Distribuciones - Fit Datos Empiricos
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+nn <- 25
+set.seed(123)
+x <- rnorm(nn, 12, 5)
+fit <- fitdistrplus::fitdist(x, distr = "gamma")
+summary(fit, )
+plot(fit)
+```
+
+
+## Distribuciones - Fit Datos Empiricos
+
+```{r}
+#| echo: true
+
+fitdistrplus::descdist(x, discrete = FALSE)
+```
+
+
+
+## Distribuciones - Fit Cuantiles {auto-animate="true"}
+
+```{r}
+#| echo: true
+rriskDistributions::get.norm.par(c(0.1, 0.5, 0.9), 
+                                 c(2, 2.5, 3), 
+                                 show.output = TRUE, 
+                                 plot = TRUE ) 
+```
+
+
+
+## Distribuciones - Fit Cuantiles {auto-animate="true"}
+
+```{r}
+#| echo: true
+rriskDistributions::get.norm.par(c(0.1, 0.5, 0.9), 
+                                 c(2, 2.5, 3.5), 
+                                 show.output = TRUE, 
+                                 plot = TRUE ) 
+```
+
+
+
+
+# MUESTREO
+## Muestreo
+
+Aleatorio VS LHS (Hipercubo Latino)  
+N = 10, 25, 100, 1000, 10k, 100k
+
+```{r}
+
+# rnorm_hist <- function(nn) {
+#   list(hist(rnorm(nn), freq = FALSE))
+# }
+# # rnorm_hist(100) 
+# 
+# x <- purrr::map(c(10, 100), rnorm_hist)
+
+```
+
+
+
+![](img/sampling_distro.png)
+
+## Muestreo
+
+Aleatorio VS LHS (Hipercubo Latino)\
+N = 100
+
+![](img/sampling_100.png)
+
+## Muestreo
+
+Aleatorio VS LHS (Hipercubo Latino)\
+N = 10
+
+![](img/sampling_10.png)
+
+## Correlación
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Las variables pueden estar correlacionadas entre si.   
+2 formas de incluir la correlación en el muestreo:
+ 
+ - LHS (matriz sigma de correlación)
+ - Aleatorio (copula)
+
+ [Correlated Variables Sampling](https://rpubs.com/frenkg79/correlated)
+:::
+
+::: {.column width="50%"}
+ > Impacto: no afecta la media, "estira" la distribución resulatdo
+
+ ![](img/cdf_correlacion.png)
+::: 
+ 
+::::
+
+## Correlación - Probabilidades
+
+```{r}
+#| echo: true
+n <- 20 # number of samples
+nvars <- 3 # number of variables
+
+# correlation matrix (symmetric!)
+sigma <- matrix(rep(0, nvars*nvars), nrow = nvars, ncol = nvars) # uncorrelated
+sigma[1,] <- c(1.0, 0.5, 0.0) 
+sigma[2,] <- c(0.5, 1.0, 0.8)
+sigma[3,] <- c(0.0, 0.8, 1.0)
+
+set.seed(123)
+corrLHS <- pse::LHS(factors = nvars, N = n, method = "HL", opts = list(COR = sigma, eps = 0.05))
+
+XX <- pse::get.data(corrLHS)
+
+head(XX, 3)
+```
+
+## Correlación - Sigma 
+
+Variables en el rango [0, 1]
+
+```{r}
+#| echo: true
+plot(XX)
+```
+
+
+## Correlación - Variables 
+
+> usa la función de *quantiles* 
+
+```{r}
+#| echo: true
+
+df <- data.frame(var1 = qlnorm(XX[, 1], 10, 2),
+                 var2 = qnorm(XX[, 2], 5, 0.5),
+                 var3 = qunif(XX[, 3], 0, 1))
+
+head(df, 3)
+
+```
+
+## Correlación - Resultados
+
+```{r}
+#| echo: true
+
+# df[ , 1] = log10(df[ , 1])
+psych::pairs.panels(df, 
+                    method = "spearman", # correlation method
+                    hist.col = "#00AFBB",
+                    density = TRUE,  # show density plots
+                    ellipses = TRUE) # show correlation ellipses
+```
+
+
+
+
+
+
+# EXTRAS
+## Aproximación de *pi* - Codigo
+
+```{r}
+#| echo: true
+nn <- 1e4  
+
+experiment <- data_frame(N = 1:nn) %>% 
+  mutate(X = runif(nn, -1, 1),
+         Y = runif(nn, -1, 1),
+         D = sqrt(X^2 + Y^2), # distance from origin
+         circle = if_else(D <= 1, TRUE, FALSE))
+
+head(experiment, 3)
+
+# Estimate of Pi
+pi_estimate <- experiment %>% 
+  summarize(pi_estimate = 4 * sum(circle) / n()) %>% 
+  pull(pi_estimate)
+
+```
+
+## Aproximación de *pi* - Grafica
+
+```{r}
+ggplot(experiment, aes(x = X, y = Y)) +
+  geom_point(aes(color = circle), size = 0.5, alpha = 0.6) +
+  scale_color_manual(values = c("FALSE" = "red", "TRUE" = "blue"),
+                     labels = c("Outside Circle", "Inside Circle"),
+                     name = "Point Location") +
+  labs(title = paste("Monte Carlo Estimation of Pi (n =", n, ")"),
+       subtitle = paste("Estimated Pi:", round(pi_estimate, 5)),
+       x = "x-coordinate", y = "y-coordinate") +
+  coord_equal() +
+  theme_minimal()
+```
+
+
+## Aproximación de *pi* - Convergencia
+
+```{r}
+pi_approximator <- function(n = 10) {
+
+  experiment <- data_frame(N = 1:n) %>%
+    mutate(X = runif(n, -1, 1),
+           Y = runif(n, -1, 1),
+           D = sqrt(X^2 + Y^2),
+           circle = if_else(D <= 1, TRUE, FALSE)) %>%
+    summarize(N = n(),
+              pi_approx = sum(circle) / n() * 4,
+              pi_err = (pi_approx - pi) / pi * 100)
+}
+
+output <- purrr::map(c(10 ^ c(2:6)), pi_approximator)
+
+data_frame(repetitions = purrr::map_int(output, "N"),
+           approx_error = purrr::map_dbl(output, "pi_err")) %>%
+  ggplot(aes(x = repetitions, y = approx_error)) +
+    geom_line() +
+    geom_hline(aes(yintercept = 0), color = "red", linetype = 2) +
+    scale_x_log10()
+```
+
+
+## Resolución de Integrales {auto-animate="true"}
+
+```{r}
+#| echo: true
+
+ff <- "x * sin(x^2)"
+x_range <- c(0, 2 * sqrt(pi))
+nn <- 1e3
+set.seed(1)
+rmontecarlo::integrate_mc(ff, x_range, n = nn)
+
+```
+
+## Resolución de Integrales {auto-animate="true"}
+
+```{r}
+#| echo: true
+
+ff <- "x * sin(x^2)"
+x_range <- c(0, 2 * sqrt(pi))
+nn <- 1e4
+set.seed(1)
+rmontecarlo::integrate_mc(ff, x_range, n = nn)
+
+```
+
+## Resolución de Integrales - Convergencia
+
+```{r}
+nn <- 10^c(2:6)
+
+set.seed(1234)
+sol_conv <- array(length(nn))
+for (i in seq_along(nn)) {
+  sol_conv[i] <- rmontecarlo::integrate_mc(ff, x_range, n = nn[i])$solution
+}
+
+tibble(N = nn, 
+       sol = sol_conv) %>% 
+  ggplot(aes(x = N, y = sol)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = 2, color = "red") +
+  scale_x_log10()
+
+
+```
+
