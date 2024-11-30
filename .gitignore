@@ -4,5 +4,4 @@
 .Ruserdata
 
 /.quarto/
-/montecarlo2024_presentation_files
-*.html
+.Rproj
